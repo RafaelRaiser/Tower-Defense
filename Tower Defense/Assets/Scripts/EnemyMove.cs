@@ -4,15 +4,6 @@ using UnityEngine;
 
 public class EnemyMove : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    [SerializeField] Rigidbody2D rB;
+    [SerializeField] private float moveSpeed = 2f;
 }
