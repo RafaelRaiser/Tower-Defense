@@ -22,4 +22,16 @@ public class UIManager : MonoBehaviour
     {
         GameManager.onPlayerStatsChanged -= UpdateUI;
     }
+    void Start()
+    {
+        UpdateUI();  // Atualiza a UI inicialmente
+        CreateTowerButtons();
+    }
+
+    // Método para atualizar a vida e ouro do jogador
+    public void UpdateUI()
+    {
+        playerHealthText.text = "Health: " + GameManager.Instance.playerHealth.ToString();
+        playerGoldText.text = "Gold: " + GameManager.Instance.playerGold.ToString();
+    }
 }
