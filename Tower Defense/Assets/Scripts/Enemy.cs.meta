@@ -1,9 +1,5 @@
 fileFormatVersion: 2
- GameManager
-guid: 2fa4f337122bacb4b86c5ee33251bf0a
-=======
-guid: eb9dfbc19b1a5d94ca320ce1c770cf3e
-main
+guid: 27760bfe44bfbef43be249516ee8f77d
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
