@@ -8,10 +8,6 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 4320766561847978367}
-  - component: {fileID: 8038682954526597160}
-  - component: {fileID: 7415145555207692394}
-  - component: {fileID: 8213840355146340543}
   m_Layer: 0
   m_Name: Enemy1
   m_TagString: Untagged
@@ -147,4 +143,3 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.49999997
