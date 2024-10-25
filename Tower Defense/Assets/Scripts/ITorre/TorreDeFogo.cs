@@ -12,7 +12,7 @@ public class TorreFogo : TorrePadrao
 
     public override void FazerUpgrade()
     {
-        dano += 10; // Mais dano
+        dano += 10; 
         tempoEntreDisparos -= 0.3f; // Menos tempo entre disparos
     }
 }
