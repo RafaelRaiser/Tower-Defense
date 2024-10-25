@@ -4,26 +4,21 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
- GameManager
-    public static GameManager Instance;  // Singleton para f�cil acesso global
+    public static GameManager Instance;
 
-    public List<Transform> spawnPoints;  // Pontos de spawn dos inimigos
-    public GameObject[] enemyPrefabs;    // Prefabs dos inimigos
-    public int totalWaves = 5;           // N�mero total de ondas
-    public float timeBetweenWaves = 10f; // Tempo entre as ondas
-    private int currentWave = 0;
+    public Transform[] marks; 
+    public GameObject[] inimigosPrefab; 
+    public Transform pontoSpawn; 
+    public int numeroDeInimigosPorHorda = 8;
+    public int ouro = 50;
+    public int VidaJogador = 10;
 
-    public int playerHealth = 20;        // Vida do jogador
-    public int playerGold = 100;         // Ouro para comprar torres
+    private int hordaAtual = 1;
 
-    private bool isGameOver = false;
-
-    // Evento para alertar o UIManager sobre a mudan�a no ouro ou vida
-    public delegate void OnPlayerStatsChanged();
-    public static event OnPlayerStatsChanged onPlayerStatsChanged;
-
+    #region Singleton
     void Awake()
     {
+        // Singleton pattern para garantir que só haja um GameManager
         if (Instance == null)
         {
             Instance = this;
@@ -33,85 +28,34 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
-
+    #endregion
     void Start()
     {
-        StartCoroutine(StartGame());
+        // Começa a primeira horda
+        InvokeRepeating("IniciarHorda", 2f, 10f);
     }
 
-    // Controla o ciclo das ondas de inimigos
-    IEnumerator StartGame()
+    void IniciarHorda()
     {
-        while (!isGameOver && currentWave < totalWaves)
+        for (int i = 0; i < numeroDeInimigosPorHorda; i++)
         {
-            currentWave++;
-            SpawnEnemies();
-            yield return new WaitForSeconds(timeBetweenWaves);
-        }
-    }
-
-    // M�todo para spawnar os inimigos de acordo com a onda
-    void SpawnEnemies()
-    {
-        int numberOfEnemies = currentWave * 5; // Exemplo: n�mero de inimigos cresce a cada onda
-        for (int i = 0; i < numberOfEnemies; i++)
-        {
-            // Escolhe um spawn point aleat�rio
-            Transform spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Count)];
-
-            // Escolhe um inimigo aleat�rio (pode ser ajustado para inimigos mais fortes a cada onda)
-            GameObject enemyPrefab = enemyPrefabs[Random.Range(0, enemyPrefabs.Length)];
-
-            Instantiate(enemyPrefab, spawnPoint.position, Quaternion.identity);
-        }
-    }
-
-    // Chamado quando o jogador perde vida
-    public void TakeDamage(int damage)
-    {
-        playerHealth -= damage;
-
-        if (playerHealth <= 0)
-        {
-            GameOver();
+            SpawnarInimigo();
         }
 
-        if (onPlayerStatsChanged != null)
-        {
-            onPlayerStatsChanged();  // Atualiza a UI com a nova vida
-        }
+        // Aumenta o número de inimigos na próxima horda
+        numeroDeInimigosPorHorda++;
     }
 
-    // M�todo para adicionar ouro
-    public void AddGold(int amount)
+    void SpawnarInimigo()
     {
-        playerGold += amount;
-
-        if (onPlayerStatsChanged != null)
-        {
-            onPlayerStatsChanged();  // Atualiza a UI com o novo ouro
-        }
+        // Escolhe um inimigo aleatório e instancia
+        int rand = Random.Range(0, inimigosPrefab.Length);
+        Instantiate(inimigosPrefab[rand], pontoSpawn.position, Quaternion.identity);
     }
 
-    // Condi��o de fim de jogo
-    void GameOver()
+    public void AdicionarOuro(int quantidade)
     {
-        isGameOver = true;
-        Debug.Log("Game Over!");
-        // Chamar o UIManager para mostrar a tela de derrota
+        ouro += quantidade;
+        UIManager.Instance.AtualizarUI();
     }
-}
-=======
-  
-    public static GameManager instance;
-    public Transform[] path;
-    public Transform startPoint;
-
-    #region Singleton
-    private void Awake()
-    {
-        instance = this;
-    }
-    #endregion
-
 }
