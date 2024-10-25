@@ -1,44 +1,77 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+using UnityEngine;
+
 public class Enemy : MonoBehaviour
 {
-    public float speed;  // Velocidade do inimigo
-    public int health;   // Vida do inimigo
+    public float velocidade;
+    public int vida;
+    public int recompensaOuro;
 
-    public Transform[] waypoints;  // Pontos de curva no caminho
-    private int waypointIndex = 0;
+    private int vidaAtual;
+    private Transform alvo;
+    private int markIndex = 0;
+
+    // Referência ao GameManager
+    private GameManager gameManager;
+
+    void Start()
+    {
+        vidaAtual = vida;
+        // O GameManager gerencia os marks
+        gameManager = GameManager.Instance;
+        // Define o primeiro alvo como o primeiro mark
+        alvo = gameManager.marks[0];
+    }
 
     void Update()
     {
-        Move();
+        Mover();
     }
 
-    // Movimenta o inimigo ao longo dos waypoints
-    void Move()
+    void Mover()
     {
-        if (waypointIndex < waypoints.Length)
-        {
-            transform.position = Vector2.MoveTowards(transform.position, waypoints[waypointIndex].position, speed * Time.deltaTime);
+        if (alvo == null)
+            return;
 
-            // Se o inimigo chegou ao waypoint, avança para o próximo
-            if (Vector2.Distance(transform.position, waypoints[waypointIndex].position) < 0.2f)
-            {
-                waypointIndex++;
-            }
+        // Movimenta-se em direção ao mark atual
+        Vector3 direcao = alvo.position - transform.position;
+        transform.Translate(direcao.normalized * velocidade * Time.deltaTime, Space.World);
+
+        // Verifica se atingiu o mark atual
+        if (Vector3.Distance(transform.position, alvo.position) <= 0.2f)
+        {
+            GetProximoMark();
+        }
+    }
+
+    void GetProximoMark()
+    {
+        if (markIndex >= gameManager.marks.Length - 1)
+        {
+            // Se chegou ao destino final, morre ou realiza outra ação
+            AlcançarDestino();
         }
         else
         {
-            // O inimigo chegou ao final do caminho
-            Destroy(gameObject);
+            markIndex++;
+            alvo = gameManager.marks[markIndex];
         }
     }
 
-    // Recebe dano
-    public virtual void TakeDamage(int amount)
+    void AlcançarDestino()
     {
-        health -= amount;
-        if (health <= 0)
+        // Dano ao jogador ou redução de vida se o inimigo chegar ao final
+        gameManager.VidaJogador -= 1;
+        Destroy(gameObject);
+    }
+
+    public void ReceberDano(int dano)
+    {
+        vidaAtual -= dano;
+        if (vidaAtual <= 0)
         {
             Die();
         }
@@ -46,7 +79,8 @@ public class Enemy : MonoBehaviour
 
     void Die()
     {
-        // Código para o inimigo morrer (animação, som, etc.)
+        // Adiciona ouro ao jogador quando o inimigo morre
+        gameManager.AdicionarOuro(recompensaOuro);
         Destroy(gameObject);
     }
 }
