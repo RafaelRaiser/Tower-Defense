@@ -35,7 +35,7 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    void Die()
+    public void Die()
     {
         // Adicionar ouro ao jogador
         GameManager.Instance.AdicionarOuro(recompensaOuro);
