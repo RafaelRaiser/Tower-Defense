@@ -21,4 +21,14 @@ public class UIManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
+    void Start()
+    {
+        AtualizarUI();
+    }
+
+    public void AtualizarUI()
+    {
+        ouroText.text = "Ouro: " + GameManager.Instance.ouro.ToString();
+        vidaText.text = "Vida: " + GameManager.Instance.VidaJogador.ToString();
+    }
 }
