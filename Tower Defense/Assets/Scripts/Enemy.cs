@@ -1,44 +1,35 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 public class Enemy : MonoBehaviour
 {
-    public float speed;  // Velocidade do inimigo
-    public int health;   // Vida do inimigo
+    public float velocidade;
+    public int vida;
+    public int recompensaOuro;
 
-    public Transform[] waypoints;  // Pontos de curva no caminho
-    private int waypointIndex = 0;
+    private int vidaAtual;
+
+    void Start()
+    {
+        vidaAtual = vida;
+    }
 
     void Update()
     {
         Move();
     }
 
-    // Movimenta o inimigo ao longo dos waypoints
     void Move()
     {
-        if (waypointIndex < waypoints.Length)
-        {
-            transform.position = Vector2.MoveTowards(transform.position, waypoints[waypointIndex].position, speed * Time.deltaTime);
-
-            // Se o inimigo chegou ao waypoint, avança para o próximo
-            if (Vector2.Distance(transform.position, waypoints[waypointIndex].position) < 0.2f)
-            {
-                waypointIndex++;
-            }
-        }
-        else
-        {
-            // O inimigo chegou ao final do caminho
-            Destroy(gameObject);
-        }
+        // Movimento básico do inimigo
+        transform.Translate(Vector3.left * velocidade * Time.deltaTime);
     }
 
-    // Recebe dano
-    public virtual void TakeDamage(int amount)
+    public void ReceberDano(int dano)
     {
-        health -= amount;
-        if (health <= 0)
+        vidaAtual -= dano;
+        if (vidaAtual <= 0)
         {
             Die();
         }
@@ -46,7 +37,8 @@ public class Enemy : MonoBehaviour
 
     void Die()
     {
-        // Código para o inimigo morrer (animação, som, etc.)
+        // Adicionar ouro ao jogador
+        GameManager.Instance.AdicionarOuro(recompensaOuro);
         Destroy(gameObject);
     }
 }
